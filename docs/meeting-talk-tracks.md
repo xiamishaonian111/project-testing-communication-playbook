@@ -266,21 +266,111 @@ But I would like to preserve one bounded persistent validation as a Q3 commitmen
 
 ### Pushback: "The current plan is moving too fast."
 
-```text
-I hear the concern. To make this actionable, can you identify the top three risks that you think are not adequately covered by the current Q3 plan?
+Do not debate whether the plan is "fast" or "slow." Translate the concern into concrete risks. A speed concern is only actionable if it identifies what might fail, how serious it is, and what validation would reduce the risk.
 
-For each one, I want us to write down:
-- what could go wrong,
-- how severe it is,
-- what test would catch it,
-- which environment it belongs in,
-- and whether it needs to block Q3 or can be tracked as a known gap.
+```text
+I hear the concern that the plan may be moving too fast. To make that actionable, can we translate it into concrete risks?
+
+For each risk, I want to understand:
+1. what specific failure you are worried about,
+2. how serious it would be,
+3. what validation would detect it,
+4. which test environment should cover it,
+5. and whether it should block Q3 or be tracked as a known gap.
 ```
 
 Then:
 
 ```text
 If those risks show that the committed scope is too large, we should reduce scope. But I want the reduction to be explicit: which test, which dataset size, which automation slice, and what risk we accept.
+```
+
+Example risk format:
+
+```text
+Risk:
+[Name the concrete risk.]
+
+What could go wrong:
+[Describe the failure mode.]
+
+Severity:
+[Critical / High / Medium / Low, and why.]
+
+What validation would catch it:
+[Name the test, check, or measurement.]
+
+Environment:
+[In-memory / ephemeral / persistent.]
+
+Q3 blocker or known gap:
+[Say whether it blocks Q3 success, blocks only a specific claim, or can be tracked as a known gap.]
+```
+
+Example 1: production-shaped data load is not realistic enough.
+
+```text
+Risk:
+The synthetic data load does not match the production-shaped workload closely enough.
+
+What could go wrong:
+The persistent validation runs successfully, but the measured timing is not meaningful because data volume, metadata load, namespace shape, or recent mutation workload is unrealistic.
+
+Severity:
+High, because it weakens the main Q3 measurement result.
+
+What validation would catch it:
+A data-load validation step before the persistent run: compare generated dataset stats against the target shape.
+
+Environment:
+Persistent.
+
+Q3 blocker or known gap:
+Blocker for claiming meaningful measured timing. Not necessarily a blocker for a smoke persistent run.
+```
+
+Example 2: correctness issues are not caught systematically.
+
+```text
+Risk:
+The resulting state has missing or incorrect metadata that manual inspection does not catch.
+
+What could go wrong:
+The workflow appears to succeed, but the resulting state is incomplete or inconsistent.
+
+Severity:
+Critical for correctness.
+
+What validation would catch it:
+Expected-state manifest comparison after the run, plus targeted correctness tests for known metadata-sensitive cases.
+
+Environment:
+Partly in-memory for deterministic edge cases; persistent for high-fidelity end-to-end signal.
+
+Q3 blocker or known gap:
+Critical correctness issues should be resolved or explicitly tracked before claiming Q3 success.
+```
+
+Example 3: persistent setup is not understood well enough.
+
+```text
+Risk:
+The persistent validation setup has unknown operational steps or dependencies.
+
+What could go wrong:
+The team spends time late in Q3 debugging environment setup, permissions, instrumentation, or sequencing instead of running the validation.
+
+Severity:
+High if it blocks the first persistent run; medium if it only delays automation planning.
+
+What validation would catch it:
+A bounded manual runbook pass that documents setup steps, dependencies, required permissions, instrumentation, and blockers.
+
+Environment:
+Persistent.
+
+Q3 blocker or known gap:
+Blocker for completing the manual persistent validation. The follow-up automation can be post-Q3.
 ```
 
 ## Data-Load Discussion
