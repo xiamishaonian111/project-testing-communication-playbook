@@ -35,7 +35,6 @@ A production-shaped data load means the synthetic dataset approximates the produ
 ## Documents
 
 - [Testing Strategy](docs/testing-strategy.md)
-- [Communication Scripts](docs/communication-scripts.md)
 - [Meeting Talk Tracks](docs/meeting-talk-tracks.md)
 
 ## Public-Safety Boundary
