@@ -160,14 +160,47 @@ Automation without one validated end-to-end path is just automating assumptions.
 
 ### Pushback: "Manual now, automated later is wasteful."
 
-Agree with the risk, then define manual as discovery:
+Do not defend "manual first" as a general principle. Manual-first can be wasteful if it means doing manual testing now and unrelated automation later. The better argument is that Q3 needs one bounded manual discovery run whose output becomes the automation specification.
+
+Use this first:
 
 ```text
-I agree that throwaway manual work would be a bad outcome. I do not want us to do manual work in a way that slows down the eventual automation.
+I agree that manual-first can be wasteful if it is just manual testing now and automation later as a separate effort. That is not what I want.
 
-The reason I still think we need a manual persistent validation first is that we have not run the full workflow in that environment yet. Without that, we may automate assumptions that turn out to be wrong: setup steps, data-load requirements, correctness checks, instrumentation, permissions, dependencies, or operational sequencing.
+What I want is one bounded manual discovery run whose output directly feeds automation: the runbook, setup requirements, data-load requirements, timing boundaries, correctness checks, instrumentation gaps, and known blockers.
 
-So the goal is not “manual now, automation later” as two separate efforts. The goal is to use the manual run as an automation discovery pass. Every step we do manually should be captured in the runbook, and anything stable/repeatable should become input to the future automation design.
+Without that first validated path, direct automation may look faster, but we risk spending Q3 automating assumptions that turn out to be wrong.
+```
+
+Shorter version:
+
+```text
+The manual run is not the alternative to automation. It is how we de-risk automation. Its output is the spec for what the automation needs to do and prove.
+```
+
+Strong version:
+
+```text
+Direct automation is faster only if we already know the workflow well enough. Right now we do not. One bounded manual run is the cheapest way to turn unknowns into automation requirements.
+```
+
+If they still argue it is throwaway work, agree conditionally:
+
+```text
+If the manual run does not produce reusable automation inputs, then I agree it is wasteful. So we should define the manual run’s deliverables upfront.
+```
+
+Define the required deliverables:
+
+```text
+The manual run must produce reusable automation inputs:
+- a documented runbook,
+- a validated setup path,
+- production-shaped data-load requirements,
+- measured timing boundaries,
+- correctness oracle or manifest comparison,
+- a list of blockers,
+- and automation requirements for the next phase.
 ```
 
 Then reduce the scope:
